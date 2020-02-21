@@ -108,14 +108,23 @@ function Rubix() {
   const active = useRef(-0.5);
   /** Direction of spin. 1 or -1 */
   const dir = useRef(1);
-
+  /** A queue storing key presses
+   * so we always make sure transformations are done
+   * on time and not earlier.
+   * This avoid translation issues if user
+   * tries to rotate while it's in mid rotation
+   */
+  const moveQueue = useRef([]);
+  const lastMove = useRef(0);
+  const [duration, setDuration] = useState(250);
+  
+  /** Set up transition */
   const [springs, set] = useSprings(sides, i => {
     const position = getPositionByIndex(i);
-
     return {
       position,
       rotation: [0, 0, 0],
-      config: { duration: 350 }
+      config: { duration }
     };
   });
 
@@ -142,9 +151,9 @@ function Rubix() {
     }
   }
 
-  const keyDown = e => {
-    const { keyCode } = e;
-    const checkKey = isPressed(e);
+  /** Processes key press */
+  const processMove = keyCode => {
+    const checkKey = isPressed({ keyCode });
     handleSideSelection(keyCode);
 
     if (checkKey(keys.q) || checkKey(keys.w) || checkKey(keys.e)) {
@@ -168,18 +177,20 @@ function Rubix() {
           return;
         }
 
-        let newPos = cube.position.clone();
+        const newPos = cube.position.clone();
         const newRotation = cube.rotation.clone();
+        const matrix = new Matrix4();
+        const rotation = (Math.PI / 2) * dir.current;
 
-        let matrix;
         if (checkKey(keys.q)) {
-          matrix = rotationMatrixZ(dir.current);
+          matrix.makeRotationZ(rotation);
         } else if (checkKey(keys.w)) {
-          matrix = rotationMatrixY(dir.current);
+          matrix.makeRotationY(rotation);
         } else if (checkKey(keys.e)) {
-          matrix = rotationMatrixX(dir.current);
+          matrix.makeRotationX(rotation);
         }
         newPos.applyMatrix4(matrix);
+        matrix.multiply(cube.matrix);
         newRotation.setFromRotationMatrix(matrix);
 
         return {
@@ -190,13 +201,28 @@ function Rubix() {
     }
   };
 
+  function addToQueue({ keyCode }) {
+    moveQueue.current.push(keyCode);
+  }
+
   useEffect(() => {
-    window.addEventListener("keydown", keyDown);
+    window.addEventListener("keydown", addToQueue);
 
     return () => {
-      window.removeEventListener("keydown", keyDown);
+      window.removeEventListener("keydown", addToQueue);
     };
   }, []);
+
+  useFrame(() => {
+    if (moveQueue.current.length) {
+      const now = Date.now();
+      if (now - lastMove.current > duration*1.25) {
+        lastMove.current = now;
+        const move = moveQueue.current.shift();
+        processMove(move);
+      }
+    }
+  });
 
   return springs.map((props, i) => {
     const position = getPositionByIndex(i);
