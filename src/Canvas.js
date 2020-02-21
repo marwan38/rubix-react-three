@@ -6,11 +6,6 @@ import { useSprings, animated as a, config } from "react-spring/three";
 import { keys, isPressed } from "./keys";
 import CubixMaterial from "./material";
 import {
-  CUBE_SIZE,
-  RUBIX_AMOUNT,
-  GROUP_COLORS,
-  __prev__,
-  __next__,
   roundHalf,
   hexToRgb,
   rotation,
@@ -19,6 +14,14 @@ import {
   rotationMatrixY,
   getCubeType
 } from "./utils";
+
+import {
+  CUBE_SIZE,
+  RUBIX_AMOUNT,
+  GROUP_COLORS,
+  __prev__,
+  __next__
+} from "./constants";
 
 extend({ OrbitControls });
 

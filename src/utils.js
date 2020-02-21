@@ -1,32 +1,11 @@
-/**
- * Well really, its utils and constants
- */
+import {Matrix4} from 'three';
 
- 
-/**  Size of the individual cube */
-const CUBE_SIZE = 0.5;
-/** How many rows/colums the cube has */
-const RUBIX_AMOUNT = 3;
-/** Color by group
- * Top, right, bottom, left, front, back
- */
-const GROUP_COLORS = {
-  0: "#FFFFFF",
-  1: "#b71234",
-  2: "#ffd500",
-  3: "#ff5800",
-  4: "#009b48",
-  5: "#0046ad"
-};
-/** Key for cube to keep prev location ref */
-const __prev__ = Symbol("prev-position");
-const __next__ = Symbol("next-position");
 /** Keeps numbers in check by rounding to nearest 0.5 */
-function roundHalf(num) {
+export function roundHalf(num) {
   return Math.round(num * 2) / 2;
 }
-/** Converts HEX to RGB */
-function hexToRgb(hex) {
+/** Converts HEX to Normalized RGB */
+export function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? [
@@ -39,8 +18,9 @@ function hexToRgb(hex) {
 
 /** Rotation Matrix */
 const rotation = Math.PI / 2;
-function rotationMatrixZ(invert = 1) {
-  const rMatrixZ = new Matrix4();
+const _matrix4 = new Matrix4();
+export function rotationMatrixZ(invert = 1) {
+  const rMatrixZ = _matrix4.clone();
   rMatrixZ.set(
     Math.cos(rotation * invert),
     -Math.sin(rotation * invert),
@@ -61,8 +41,8 @@ function rotationMatrixZ(invert = 1) {
   );
   return rMatrixZ;
 }
-function rotationMatrixX(invert = 1) {
-  const rMatrixX = new Matrix4();
+export function rotationMatrixX(invert = 1) {
+  const rMatrixX = _matrix4.clone();
   rMatrixX.set(
     1,
     0,
@@ -83,8 +63,8 @@ function rotationMatrixX(invert = 1) {
   );
   return rMatrixX;
 }
-function rotationMatrixY(invert = 1) {
-  const rMatrixY = new Matrix4();
+export function rotationMatrixY(invert = 1) {
+  const rMatrixY = _matrix4.clone();
   rMatrixY.set(
     Math.cos(rotation * invert),
     0,
@@ -108,25 +88,10 @@ function rotationMatrixY(invert = 1) {
   return rMatrixY;
 }
 
-function getCubeType(position) {
+/** Returns type of cubix. Ie: edge, corner, or center */
+export function getCubeType(position) {
   const [x, y, z] = position;
   if (x === 0.5 && y === 0.5) return "center";
   else if ((x === 0 || x === 1) && (y === 0 || y === 1)) return "corner";
   else return "edge";
-}
-
-export default {
-    CUBE_SIZE,
-RUBIX_AMOUNT,
-GROUP_COLORS,
-cubeRefs,
-__prev__,
-__next__,
-roundHalf,
-hexToRgb,
-rotation,
-rotationMatrixZ,
-rotationMatrixX,
-rotationMatrixY,
-getCubeType
 }
