@@ -3,6 +3,7 @@
 A quick, 2 day project, made as a learning experience using **React-Fiber-Three** and **React-Spring**
 
 ## Controls
+    - Use mouse to move camera
     - Q: Rotate front/back
     - W: Rotate bottom/top
     - E: Rotate left/right
