@@ -1,5 +1,3 @@
-import {Matrix4} from 'three';
-
 /** Keeps numbers in check by rounding to nearest 0.5 */
 export function roundHalf(num) {
   return Math.round(num * 2) / 2;
@@ -15,79 +13,6 @@ export function hexToRgb(hex) {
       ]
     : null;
 }
-
-/** Rotation Matrix */
-const rotation = Math.PI / 2;
-const _matrix4 = new Matrix4();
-export function rotationMatrixZ(invert = 1) {
-  const rMatrixZ = _matrix4.clone();
-  rMatrixZ.set(
-    Math.cos(rotation * invert),
-    -Math.sin(rotation * invert),
-    0,
-    0,
-    Math.sin(rotation * invert),
-    Math.cos(rotation * invert),
-    0,
-    0,
-    0,
-    0,
-    1,
-    0,
-    0,
-    0,
-    0,
-    1
-  );
-  return rMatrixZ;
-}
-export function rotationMatrixX(invert = 1) {
-  const rMatrixX = _matrix4.clone();
-  rMatrixX.set(
-    1,
-    0,
-    0,
-    0,
-    0,
-    Math.cos(rotation * invert),
-    -Math.sin(rotation * invert),
-    0,
-    0,
-    Math.sin(rotation * invert),
-    Math.cos(rotation * invert),
-    0,
-    0,
-    0,
-    0,
-    1
-  );
-  return rMatrixX;
-}
-export function rotationMatrixY(invert = 1) {
-  const rMatrixY = _matrix4.clone();
-  rMatrixY.set(
-    Math.cos(rotation * invert),
-    0,
-    Math.sin(rotation * invert),
-    0,
-    0,
-    1,
-    0,
-    0,
-    -Math.sin(rotation * invert),
-    0,
-    Math.cos(rotation * invert),
-    0,
-    0,
-    0,
-    0,
-    1
-    //   Math.sin(rotation * invert),
-    //   Math.cos(rotation * invert),
-  );
-  return rMatrixY;
-}
-
 /** Returns type of cubix. Ie: edge, corner, or center */
 export function getCubeType(position) {
   const [x, y, z] = position;

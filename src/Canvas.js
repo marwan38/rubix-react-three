@@ -1,26 +1,19 @@
 import React, { useState, useRef, useEffect, forwardRef } from "react";
 import { Canvas, useFrame, extend, useThree } from "react-three-fiber";
-import { Group, Euler, Vector3, Matrix4, DoubleSide } from "three";
+import { Vector3, Matrix4, DoubleSide } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { useSprings, animated as a, config } from "react-spring/three";
+import { useSprings, animated as a } from "react-spring/three";
 import { keys, isPressed } from "./keys";
 import CubixMaterial from "./material";
 import {
   roundHalf,
-  hexToRgb,
-  rotation,
-  rotationMatrixZ,
-  rotationMatrixX,
-  rotationMatrixY,
-  getCubeType
+  hexToRgb
 } from "./utils";
 
 import {
   CUBE_SIZE,
   RUBIX_AMOUNT,
   GROUP_COLORS,
-  __prev__,
-  __next__
 } from "./constants";
 
 extend({ OrbitControls });
@@ -79,19 +72,7 @@ const Cube = forwardRef(({ ...rest }, ref) => {
   );
 });
 
-/**
- * A group is one face of the cube, the one that can be rotated
- * @param {[x, y, z]} position
- */
-function getGroupNumberByPosition(position) {
-  const [x, y, z] = position;
-  return [
-    x / CUBE_SIZE,
-    y / CUBE_SIZE + RUBIX_AMOUNT,
-    z / CUBE_SIZE + RUBIX_AMOUNT * 2
-  ];
-}
-
+/** Returns starting cube coords */
 function getPositionByIndex(i) {
   const offset = CUBE_SIZE;
   const x = (i % RUBIX_AMOUNT) * CUBE_SIZE - offset;
@@ -225,21 +206,15 @@ function Rubix() {
   });
 
   return springs.map((props, i) => {
-    const position = getPositionByIndex(i);
+    // const position = getPositionByIndex(i);
 
-    const type = getCubeType(position);
-    const belongsToGroup = getGroupNumberByPosition(position);
-
-    const color = `#${(
-      "00000" + ((Math.random() * (1 << 24)) | 0).toString(16)
-    ).slice(-6)}`;
+    // const type = getCubeType(position);
+    // const belongsToGroup = getGroupNumberByPosition(position);
 
     const key = `cube-${i}`;
-
     return (
       <Cube
         {...props}
-        color={color}
         key={key}
         index={key}
         ref={ref => {
