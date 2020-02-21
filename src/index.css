@@ -16,3 +16,11 @@ code {
   width: 100vw;
   height: 100vh;
 }
+
+.instruction {
+
+}
+
+.instruction b{
+  margin-right: 10px;
+}
